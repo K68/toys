@@ -1,0 +1,12 @@
+{
+  "name": "wsAgent",
+  "license": "GPL-3.0",
+  "version": "0.0.1",
+  "dependencies": {
+    "ws": "~1.1.1",
+    "bufferutil": "~1.2.1",
+    "utf-8-validate": "~1.2.1",
+    "express": "~4.14.0",
+    "body-parser": "~1.15.2"
+  }
+}
