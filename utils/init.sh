@@ -26,3 +26,5 @@ apt install oracle-java8-set-default
 echo "JAVA_HOME="/usr/lib/jvm/java-8-oracle"" >> /etc/environment
 source /etc/environment
 echo $JAVA_HOME
+apt-get install -y python-pip
+pip install setuptools
