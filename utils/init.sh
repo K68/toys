@@ -22,6 +22,7 @@ apt-get update
 echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
 echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 seen true" | debconf-set-selections
 apt-get install -y oracle-java8-installer
+apt install oracle-java8-set-default
 echo "JAVA_HOME="/usr/lib/jvm/java-8-oracle"" >> /etc/environment
 source /etc/environment
 echo $JAVA_HOME
