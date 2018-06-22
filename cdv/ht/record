@@ -1,0 +1,76 @@
+npm install -g cordova
+cordova create hello com.example.hello HelloWorld
+cordova platform add(update, rm) android@6.4.0
+cordova plugin add cordova-plugin-x5-tbs
+cordova plugin add cordova-plugin-whitelist@1.3.3
+cordova plugin add cordova-plugin-inappbrowser@3.0.0
+cordova plugin add cordova-plugin-dialogs@2.0.1
+cordova plugin add cordova-plugin-device@2.0.2
+cordova plugin add cordova-plugin-x-toast@2.6.2
+cordova plugin add https://github.com/Rohfosho/CordovaCallNumberPlugin.git
+cordova plugin add cordova-plugin-app-version@0.1.9
+cordova plugin add phonegap-plugin-barcodescanner@8.0.0
+cordova plugin add com.kit.cordova.amaplocation-liugogal@1.0.4 --variable API_KEY=?
+cordova plugin add cordova-plugin-file@6.0.1
+cordova plugin add cordova-plugin-photo-library@2.1.1 --force
+cordova plugin add cordova-plugin-media-capture@3.0.2
+cordova plugin add cordova-plugin-advanced-http@1.11.1
+cordova plugin add cordova-plugin-video-editor@1.1.3
+cordova plugin add cordova-plugin-mediapicker-dmcbig@2.2.5 --variable IOS_PHOTO_LIBRARY_USAGE_DESCRIPTION="Photo share with friends"
+cordova build android
+cordova platform ls
+cordova plugin ls
+
+adb install outputs\apk\debug\android-debug.apk
+adb uninstall io.cordova.hellocordova
+
+https://github.com/apache/cordova-plugin-inappbrowser
+https://blog.csdn.net/qiyei2009/article/details/52792038
+http://cordova.apache.org/docs/en/latest/guide/platforms/android/index.html#requirements-and-support
+http://cordova.apache.org/announcements/2017/11/09/android-release.html
+https://stackoverflow.com/questions/17678302/how-to-hide-full-screen-button-of-the-video-tag-in-html5
+https://stackoverflow.com/questions/14101874/how-to-disable-default-controls-on-a-full-screen-html5-video
+https://www.npmjs.com/package/cordova-plugin-x-toast
+https://www.npmjs.com/package/cordova-plugin-mediapicker-dmcbig
+https://developer.android.com/training/permissions/requesting?hl=zh-cn
+
+Com.tencent.smtt.sdk.
+https://x5.tencent.com/tbs/guide/sdkInit.html
+import com.tencent.smtt.sdk.QbSdk;
+QbSdk.initX5Environment(getApplicationContext(), null);
+
+CSP —— img-src 'self' data: content: https://assets.amzport.com;
+
+<activity android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale" android:label="@string/app_name" android:launchMode="singleTask"  android:name="org.apache.cordova.inappbrowser.InAppBrowserActivity" android:windowSoftInputMode="adjustResize">
+</activity>
+
+cordova plugin add https://github.com/runner525/x5webview-cordova-plugin.git
+cordova plugin rm x5webview-cordova-plugin@1.1.2
+
+
+Capture文件修改如下，防止压缩文件问题
+private void captureVideo(Request req) {
+    boolean needExternalStoragePermission =
+            !PermissionHelper.hasPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+    boolean needCameraPermission = cameraPermissionInManifest &&
+            !PermissionHelper.hasPermission(this, Manifest.permission.CAMERA);
+
+    if (needExternalStoragePermission || needCameraPermission) {
+        if (needExternalStoragePermission && needCameraPermission) {
+            PermissionHelper.requestPermissions(this, req.requestCode, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA});
+        } else if (needExternalStoragePermission) {
+            PermissionHelper.requestPermission(this, req.requestCode, Manifest.permission.READ_EXTERNAL_STORAGE);
+        } else {
+            PermissionHelper.requestPermission(this, req.requestCode, Manifest.permission.CAMERA);
+        }
+    }
+    
+音频限制最大3MB
+intent.putExtra(MediaStore.Audio.Media.EXTRA_MAX_BYTES, 3145728);
+intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 1024);
+
+
+Back 返回键问题解决： cordova.system.library.4=com.android.support:appcompat-v7:27.+
+
+
