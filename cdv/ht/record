@@ -74,4 +74,4 @@ intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 1024);
 
 Back 返回键问题解决： cordova.system.library.4=com.android.support:appcompat-v7:27.+
 
-
+<meta-data android:name="Mob-AppSecret" android:value="889***" /></application>
