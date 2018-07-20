@@ -30,6 +30,7 @@ import android.os.Build;
 import android.util.Log;
 import android.view.View;
 
+import cn.sharesdk.js.ShareSDKUtils;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebSettings.LayoutAlgorithm;
 import com.tencent.smtt.sdk.WebView;
@@ -70,6 +71,8 @@ public class X5WebViewEngine implements CordovaWebViewEngine {
   protected CordovaResourceApi resourceApi;
   protected NativeToJsMessageQueue nativeToJsMessageQueue;
   private BroadcastReceiver receiver;
+
+  public ShareSDKUtils shareSDK;
 
   /**
    * Used when created via reflection.
