@@ -25,14 +25,18 @@ import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import com.mob.MobSDK;
+import com.mob.moblink.Scene;
+import com.mob.moblink.SceneRestorable;
 import com.tencent.smtt.sdk.QbSdk;
 import org.apache.cordova.*;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
-public class MainActivity extends CordovaActivity
+public class MainActivity extends CordovaActivity implements SceneRestorable
 {
 
     private final static int MY_INIT_PERMISSIONS_REQUES = 168666;
@@ -81,6 +85,9 @@ public class MainActivity extends CordovaActivity
             // Set by <content src="index.html" /> in config.xml
             loadUrl(launchUrl);
         }
+
+        // 初始化MobSDK
+        MobSDK.init(this);
 
     }
 
@@ -137,6 +144,14 @@ public class MainActivity extends CordovaActivity
         }
 
         appView.getView().requestFocusFromTouch();
+    }
+
+    @Override
+    public void onReturnSceneData(Scene scene) {
+        // 处理场景还原数据, 更新画面
+        String path = this.launchUrl + "#" + scene.params.get("path").toString();
+        Log.d("hellocordova", path);
+        this.appView.getEngine().loadUrl(path, true);
     }
 
 }
