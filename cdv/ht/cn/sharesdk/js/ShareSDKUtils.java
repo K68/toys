@@ -10,8 +10,6 @@ import android.os.Handler.Callback;
 import android.os.Message;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.Platform.ShareParams;
 import cn.sharesdk.framework.PlatformDb;
@@ -23,7 +21,7 @@ import com.mob.tools.utils.Hashon;
 import com.mob.tools.utils.UIHandler;
 import com.zsxsoft.cordova.x5.X5WebView;
 
-public class ShareSDKUtils extends WebViewClient implements Callback {
+public class ShareSDKUtils implements Callback {
 	private static final String API_INIT_SDK_AND_SET_PLATFORM_CONFIG = "initSDKAndSetPlatfromConfig";
 	private static final String API_AUTHORIZE = "authorize";
 	private static final String API_CANCEL_AUTHORIZE = "cancelAuthorize";
@@ -45,7 +43,8 @@ public class ShareSDKUtils extends WebViewClient implements Callback {
 	private X5WebView webview;
 	private Hashon hashon;
 	private Context context;
-	private boolean disableSSO = false; 
+	private boolean disableSSO = false;
+	private boolean inited = false;
 	
 	public static ShareSDKUtils prepare(X5WebView webview) {
 		return new ShareSDKUtils(webview);
@@ -59,11 +58,14 @@ public class ShareSDKUtils extends WebViewClient implements Callback {
 		context = this.webview.getContext().getApplicationContext();
 
 		webview.getSettings().setJavaScriptEnabled(true);
-		webview.addJavascriptInterface(this, "JSInterface");
+		webview.addJavascriptInterface(this, "JSInterfaceShareSDK");
 	}
 	
 	/* process js init function */
 	public void onInit() {
+		if (inited)
+			return;
+		inited = true;
 		// platform type: 1 for android, 2 for ios
 		Log.d("ShareSDKUtils ===", "initSDK");
 		String script = "javascript:$sharesdk.initSDK(1);";

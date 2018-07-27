@@ -148,7 +148,7 @@ function ShareSDK()
         	}
                                                          
             //java接口
-            window.JSInterface.jsCallback(request.seqId.toString(), request.method, ObjectToJsonString(request.params), "$sharesdk.callback");
+            window.JSInterfaceShareSDK.jsCallback(request.seqId.toString(), request.method, ObjectToJsonString(request.params), "$sharesdk.callback");
         };
 
         /**
@@ -508,7 +508,7 @@ function ShareSDK()
             case 1:
                 jsLog = {
                     log: function(msg) {
-                        window.JSInterface.jsLog(msg);
+                        window.JSInterfaceShareSDK.jsLog(msg);
                     }
                 };
                 if(isDebug) {
