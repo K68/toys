@@ -77,10 +77,12 @@ public class X5WebViewClient extends WebViewClient {
    */
   @Override
   public boolean shouldOverrideUrlLoading(WebView view, String url) {
-    if (url.startsWith("sharesdk://init")) {
+    if (url.startsWith("sharesdk://init") || url.startsWith("mobpush://init")) {
+      this.parentEngine.mobPush.onInit();
       this.parentEngine.shareSDK.onInit();
       return true;
     }
+
     return parentEngine.client.onNavigationAttempt(url);
   }
 
@@ -141,7 +143,8 @@ public class X5WebViewClient extends WebViewClient {
    */
   @Override
   public void onPageStarted(WebView view, String url, Bitmap favicon) {
-    if (url.startsWith("sharesdk://init")) {
+    if (url.startsWith("sharesdk://init") || url.startsWith("mobpush://init")) {
+      this.parentEngine.mobPush.onInit();
       this.parentEngine.shareSDK.onInit();
       return;
     }

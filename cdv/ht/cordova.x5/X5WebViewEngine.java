@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.View;
 
 import cn.sharesdk.js.ShareSDKUtils;
+import com.mob.js.MobPushUtils;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebSettings.LayoutAlgorithm;
 import com.tencent.smtt.sdk.WebView;
@@ -73,6 +74,7 @@ public class X5WebViewEngine implements CordovaWebViewEngine {
   private BroadcastReceiver receiver;
 
   public ShareSDKUtils shareSDK;
+  public MobPushUtils mobPush;
 
   /**
    * Used when created via reflection.

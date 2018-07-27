@@ -25,8 +25,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.js.ShareSDKUtils;
+import com.mob.js.MobPushUtils;
 import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebView;
@@ -94,9 +94,10 @@ public class X5WebView extends WebView implements CordovaWebViewEngine.EngineVie
       });
     }
 
+    // 辅助配合MobPush
+    this.parentEngine.mobPush = MobPushUtils.prepare(this);
     // 辅助配合ShareSDK
     this.parentEngine.shareSDK = ShareSDKUtils.prepare(this);
-
   }
 
   @Override
