@@ -17,7 +17,7 @@
        under the License.
  */
 
-package io.cordova.hellocordova;
+package com.amzport.haitang;
 
 import android.Manifest;
 import android.graphics.Color;
