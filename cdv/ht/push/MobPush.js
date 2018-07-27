@@ -71,7 +71,7 @@ function MobPush()
             }
 
             //java接口
-            window.JSInterface.jsCallback(request.seqId.toString(), request.method, ObjectToJsonString(request.params), "$mobpush.callback");
+            window.JSInterfaceMobPush.jsCallback(request.seqId.toString(), request.method, ObjectToJsonString(request.params), "$mobpush.callback");
         };
 
         /**
@@ -275,7 +275,7 @@ function MobPush()
             case 1:
                 jsLog = {
                 log: function(msg) {
-                    window.JSInterface.jsLog(msg);
+                    window.JSInterfaceMobPush.jsLog(msg);
                 }
                 };
                 if(isDebug) {
