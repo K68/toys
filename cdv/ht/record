@@ -79,3 +79,6 @@ http://wiki.mob.com/Android_%E5%BF%AB%E9%80%9F%E9%9B%86%E6%88%90%E6%8C%87%E5%8D%
 http://bbs.mob.com/thread-89-1-4.html
 http://bbs.mob.com/thread-95-1-4.html
 <meta-data android:name="Mob-AppSecret" android:value="889***" /></application>
+
+
+高德、微信、QQ、新浪、华为、小米、魅族、Mob  填写各种appid，appkey，配置包名，AndroidManifest里配置推送需要仔细。
