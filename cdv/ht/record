@@ -87,3 +87,4 @@ http://bbs.mob.com/thread-95-1-4.html
 
 Android 启动图标手动配置 mipmap
 
+<preference name="Orientation" value="portrait" />
