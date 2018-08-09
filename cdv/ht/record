@@ -85,6 +85,7 @@ http://bbs.mob.com/thread-95-1-4.html
 
 高德、微信、QQ、新浪、华为、小米、魅族、Mob  填写各种appid，appkey，配置包名，AndroidManifest里配置推送需要仔细。
 
-Android 启动图标手动配置 mipmap
+Android 启动图标手动配置 mipmap 或者参考如下链接
+https://blog.csdn.net/u011127019/article/details/79203931
 
 <preference name="Orientation" value="portrait" />
