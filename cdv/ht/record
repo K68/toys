@@ -88,5 +88,7 @@ http://bbs.mob.com/thread-95-1-4.html
 
 Android 启动图标手动配置 mipmap 或者参考如下链接
 https://blog.csdn.net/u011127019/article/details/79203931
+https://android.jlelse.eu/the-complete-android-splash-screen-guide-c7db82bce565
+res/values/app_theme.xml
 
 <preference name="Orientation" value="portrait" />
