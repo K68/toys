@@ -129,19 +129,10 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
         webViewLayout.addView(mViewParent, new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT));
-        
+
         setContentView(webViewLayout);
 
-        if (preferences.contains("BackgroundColor")) {
-            try {
-                int backgroundColor = preferences.getInteger("BackgroundColor", Color.BLACK);
-                // Background of activity:
-                appView.getView().setBackgroundColor(backgroundColor);
-            }
-            catch (NumberFormatException e){
-                e.printStackTrace();
-            }
-        }
+        appView.getView().setBackgroundColor(Color.TRANSPARENT);
 
         appView.getView().requestFocusFromTouch();
     }
