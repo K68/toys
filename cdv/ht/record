@@ -91,5 +91,6 @@ https://blog.csdn.net/u011127019/article/details/79203931
 https://android.jlelse.eu/the-complete-android-splash-screen-guide-c7db82bce565
 res/values/app_theme.xml
 android:theme="@style/AppTheme.Launcher"
+windowBackground只控制背景色，由初始的临时界面体现背景，再setContentView回来
 
 <preference name="Orientation" value="portrait" />
