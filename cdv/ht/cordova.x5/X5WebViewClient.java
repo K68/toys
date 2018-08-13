@@ -19,6 +19,7 @@
 package com.zsxsoft.cordova.x5;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -69,6 +70,25 @@ public class X5WebViewClient extends WebViewClient {
     this.parentEngine = parentEngine;
   }
 
+  private boolean amzport(String url) {
+    if (url.startsWith("amzport://init")) {
+      Log.d("amzport", "init");
+      parentEngine.parentWebView.getView().setBackground(null);
+      return true;
+    }
+
+    if (url.startsWith("amzport://hide")) {
+      Log.d("amzport", "hide");
+      Intent intent= new Intent(Intent.ACTION_MAIN);
+      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      intent.addCategory(Intent.CATEGORY_HOME);
+      parentEngine.cordova.getActivity().startActivity(intent);
+      return true;
+    }
+
+    return false;
+  }
+
   /**
    * Give the host application a chance to take over the control when a new url
    * is about to be loaded in the current WebView.
@@ -85,9 +105,7 @@ public class X5WebViewClient extends WebViewClient {
       return true;
     }
 
-    if (url.startsWith("amzport://init")) {
-      Log.d("amzport", "init");
-      parentEngine.parentWebView.getView().setBackground(null);
+    if (amzport(url)) {
       return true;
     }
 
@@ -157,9 +175,7 @@ public class X5WebViewClient extends WebViewClient {
       return;
     }
 
-    if (url.startsWith("amzport://init")) {
-      Log.d("amzport", "init");
-      parentEngine.parentWebView.getView().setBackground(null);
+    if (amzport(url)) {
       return;
     }
 
