@@ -23,9 +23,11 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 
+import android.util.Log;
 import com.tencent.smtt.export.external.interfaces.ClientCertRequest;
 import com.tencent.smtt.export.external.interfaces.HttpAuthHandler;
 import com.tencent.smtt.export.external.interfaces.SslError;
@@ -78,8 +80,14 @@ public class X5WebViewClient extends WebViewClient {
   @Override
   public boolean shouldOverrideUrlLoading(WebView view, String url) {
     if (url.startsWith("sharesdk://init") || url.startsWith("mobpush://init")) {
-      this.parentEngine.mobPush.onInit();
-      this.parentEngine.shareSDK.onInit();
+      parentEngine.mobPush.onInit();
+      parentEngine.shareSDK.onInit();
+      return true;
+    }
+
+    if (url.startsWith("amzport://init")) {
+      Log.d("amzport", "init");
+      parentEngine.parentWebView.getView().setBackground(null);
       return true;
     }
 
@@ -144,8 +152,14 @@ public class X5WebViewClient extends WebViewClient {
   @Override
   public void onPageStarted(WebView view, String url, Bitmap favicon) {
     if (url.startsWith("sharesdk://init") || url.startsWith("mobpush://init")) {
-      this.parentEngine.mobPush.onInit();
-      this.parentEngine.shareSDK.onInit();
+      parentEngine.mobPush.onInit();
+      parentEngine.shareSDK.onInit();
+      return;
+    }
+
+    if (url.startsWith("amzport://init")) {
+      Log.d("amzport", "init");
+      parentEngine.parentWebView.getView().setBackground(null);
       return;
     }
 
