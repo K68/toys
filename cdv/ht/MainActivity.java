@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import com.mob.MobSDK;
@@ -46,6 +47,11 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
     {
         super.onCreate(savedInstanceState);
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
+
+        RelativeLayout preloadLayout = new RelativeLayout(this);
+        preloadLayout.setBackgroundColor(Color.TRANSPARENT);
+        preloadLayout.setBackgroundResource(R.drawable.splash_screen);
+        setContentView(preloadLayout);
 
         // enable Cordova apps to be started in the background
         Bundle extras = getIntent().getExtras();
@@ -130,9 +136,11 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT));
 
-        setContentView(webViewLayout);
-
         appView.getView().setBackgroundColor(Color.TRANSPARENT);
+        appView.getView().setBackgroundResource(R.drawable.splash_screen);
+//        getWindow().getDecorView().setBackgroundColor(Color.WHITE);
+
+        setContentView(webViewLayout);
 
         appView.getView().requestFocusFromTouch();
     }
