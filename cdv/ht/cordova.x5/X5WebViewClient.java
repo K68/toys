@@ -71,9 +71,12 @@ public class X5WebViewClient extends WebViewClient {
   }
 
   private boolean amzport(String url) {
-    if (url.startsWith("amzport://init")) {
+    if (url.startsWith("amzport://init") || url.startsWith("sharesdk://init") || url.startsWith("mobpush://init")) {
       Log.d("amzport", "init");
       parentEngine.parentWebView.getView().setBackground(null);
+
+      parentEngine.mobPush.onInit();
+      parentEngine.shareSDK.onInit();
       return true;
     }
 
@@ -99,12 +102,6 @@ public class X5WebViewClient extends WebViewClient {
    */
   @Override
   public boolean shouldOverrideUrlLoading(WebView view, String url) {
-    if (url.startsWith("sharesdk://init") || url.startsWith("mobpush://init")) {
-      parentEngine.mobPush.onInit();
-      parentEngine.shareSDK.onInit();
-      return true;
-    }
-
     if (amzport(url)) {
       return true;
     }
@@ -169,12 +166,6 @@ public class X5WebViewClient extends WebViewClient {
    */
   @Override
   public void onPageStarted(WebView view, String url, Bitmap favicon) {
-    if (url.startsWith("sharesdk://init") || url.startsWith("mobpush://init")) {
-      parentEngine.mobPush.onInit();
-      parentEngine.shareSDK.onInit();
-      return;
-    }
-
     if (amzport(url)) {
       return;
     }
