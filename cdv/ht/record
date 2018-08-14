@@ -92,5 +92,10 @@ https://android.jlelse.eu/the-complete-android-splash-screen-guide-c7db82bce565
 res/values/app_theme.xml
 android:theme="@style/AppTheme.Launcher"
 windowBackground只控制背景色，由初始的临时界面体现背景，再setContentView回来
+https://developer.android.com/training/multiscreen/screendensities?hl=zh-cn
+    · xhdpi：2.0
+    · hdpi：1.5
+    · mdpi：1.0（基准）
+    · ldpi：0.75
 
 <preference name="Orientation" value="portrait" />
