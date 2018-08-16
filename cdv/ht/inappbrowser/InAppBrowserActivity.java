@@ -21,7 +21,7 @@ import android.widget.*;
 import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient;
 import com.tencent.smtt.export.external.interfaces.JsResult;
 import com.tencent.smtt.sdk.*;
-import io.cordova.hellocordova.MainActivity;
+import com.amzport.haitang.MainActivity;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -210,6 +210,16 @@ public class InAppBrowserActivity extends Activity {
         inAppWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                // Log.d("InAppBrowser", url);
+                if (url.startsWith("androidamap://")) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    Uri uri = Uri.parse(url);
+                    intent.setData(uri);
+                    startActivity(intent);
+                    return true;
+                }
                 return false;
             }
 
