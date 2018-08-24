@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.os.Build;
 
 import android.util.Log;
+import com.amzport.haitang.MainActivity;
 import com.tencent.smtt.export.external.interfaces.ClientCertRequest;
 import com.tencent.smtt.export.external.interfaces.HttpAuthHandler;
 import com.tencent.smtt.export.external.interfaces.SslError;
@@ -77,15 +78,28 @@ public class X5WebViewClient extends WebViewClient {
 
       parentEngine.mobPush.onInit();
       parentEngine.shareSDK.onInit();
+
+      if (url.startsWith("amzport://init") && ((MainActivity)parentEngine.cordova.getActivity()).exteralOpen == 2) {
+          parentEngine.loadUrl("javascript:window.exteralOpen=true;", false);
+      }
+
       return true;
     }
 
     if (url.startsWith("amzport://hide")) {
-      Log.d("amzport", "hide");
-      Intent intent= new Intent(Intent.ACTION_MAIN);
-      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      intent.addCategory(Intent.CATEGORY_HOME);
-      parentEngine.cordova.getActivity().startActivity(intent);
+      MainActivity ma = (MainActivity)parentEngine.cordova.getActivity();
+      if (ma.exteralOpen == 2) { // 从外部打开，关闭Activity
+        Log.d("amzport", "close");
+        ma.exteralOpen = 0;
+        ma.finish();
+      } else {
+        Log.d("amzport", "hide");
+        ma.exteralOpen = 0;
+        Intent intent= new Intent(Intent.ACTION_MAIN);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        ma.startActivity(intent);
+      }
       return true;
     }
 
