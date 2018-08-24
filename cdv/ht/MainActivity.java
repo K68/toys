@@ -42,6 +42,8 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
 
     private final static int MY_INIT_PERMISSIONS_REQUES = 168666;
 
+    public int exteralOpen = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -68,7 +70,8 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
                 QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
                     @Override
                     public void onViewInitFinished(boolean arg0) {
-                        loadUrl(launchUrl);
+                        // loadUrl(launchUrl);
+                        loadTheURL(null);
                     }
 
                     @Override
@@ -89,12 +92,26 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
             */
 
             // Set by <content src="index.html" /> in config.xml
-            loadUrl(launchUrl);
+            // loadUrl(launchUrl);
+            loadTheURL(null);
         }
 
         // 初始化MobSDK
         MobSDK.init(this);
 
+    }
+
+    synchronized private void loadTheURL(String path) {
+        if (path != null) {
+            if (exteralOpen == 0) {
+                loadUrl(launchUrl);
+            }
+            exteralOpen = 2;
+            appView.getEngine().loadUrl(path, true);
+        } else if(exteralOpen == 0) {
+            loadUrl(launchUrl);
+            exteralOpen = 1;
+        }
     }
 
     @Override
@@ -105,7 +122,8 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
                 QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
                     @Override
                     public void onViewInitFinished(boolean arg0) {
-                        loadUrl(launchUrl);
+                        // loadUrl(launchUrl);
+                        loadTheURL(null);
                     }
 
                     @Override
@@ -148,9 +166,7 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
     @Override
     public void onReturnSceneData(Scene scene) {
         // 处理场景还原数据, 更新画面
-        String path = this.launchUrl + "#" + scene.params.get("path").toString();
-        Log.d("hellocordova", path);
-        this.appView.getEngine().loadUrl(path, true);
+        loadTheURL(this.launchUrl + "#" + scene.params.get("path").toString());
     }
 
 }
