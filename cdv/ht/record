@@ -104,3 +104,5 @@ https://developer.android.com/training/multiscreen/screendensities?hl=zh-cn
 
 https://www.jianshu.com/p/31999dd83263  X5集成经验贴
 https://lbs.amap.com/api/amap-mobile/gettingstarted  打开高德app
+
+https://github.com/react-native-community/react-native-camera/issues/1532  force = true //<-- force dependency resolution to 26.0.1 in my case
