@@ -210,6 +210,11 @@ public class MobPushUtils implements Handler.Callback {
                 if (parmsMap.containsKey("space")) {
                     space = Integer.parseInt(parmsMap.get("space").toString());
                 }
+                
+                String path = (String) parmsMap.get("path");
+                HashMap<String, String> extras = new HashMap<String, String>();
+                extras.put("path", path);
+                
                 MobPushLocalNotification noti = new MobPushLocalNotification();
                 noti.setTitle(title);
                 noti.setContent(text);
