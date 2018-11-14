@@ -26,14 +26,16 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import com.mob.MobSDK;
 import com.mob.moblink.Scene;
 import com.mob.moblink.SceneRestorable;
+import com.tencent.smtt.export.external.TbsCoreSettings;
 import com.tencent.smtt.sdk.QbSdk;
 import org.apache.cordova.*;
+
+import java.util.HashMap;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
@@ -61,45 +63,46 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
             moveTaskToBack(true);
         }
 
-        if (!QbSdk.isTbsCoreInited()) {
+        // 在调用TBS初始化、创建WebView之前进行如下配置，以开启优化方案
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put(TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER, true);
+        QbSdk.initTbsSettings(map);
 
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, MY_INIT_PERMISSIONS_REQUES);
-            } else {
-
-                QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
-                    @Override
-                    public void onViewInitFinished(boolean arg0) {
-                        // loadUrl(launchUrl);
-                        loadTheURL(null);
-                    }
-
-                    @Override
-                    public void onCoreInitFinished() {
-                    }
-                };
-                QbSdk.initX5Environment(getApplicationContext(), cb);
-                // QbSdk.preInit(getApplicationContext(), cb);
-            }
-
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, MY_INIT_PERMISSIONS_REQUES);
         } else {
-            /*
-            QbSdk.initX5Environment(getApplicationContext(), null);
-            new Handler().postDelayed(new Runnable(){
-                public void run() {
-                }
-            }, 500);
-            */
-
-            // Set by <content src="index.html" /> in config.xml
-            // loadUrl(launchUrl);
-            loadTheURL(null);
+            Log.d("amzport","initX5Environment 1");
+            QbSdk.initX5Environment(getApplicationContext(), sdkCB);
         }
 
         // 初始化MobSDK
         MobSDK.init(this);
-
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[],
+                                           int[] grantResults) {
+        switch (requestCode) {
+            case MY_INIT_PERMISSIONS_REQUES:
+                Log.d("amzport","initX5Environment 2");
+                QbSdk.initX5Environment(getApplicationContext(), sdkCB);
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    private QbSdk.PreInitCallback sdkCB = new QbSdk.PreInitCallback() {
+        @Override
+        public void onViewInitFinished(boolean arg0) {
+            Log.d("amzport","Init then loadTheURL");
+            loadTheURL(null);
+        }
+
+        @Override
+        public void onCoreInitFinished() {
+        }
+    };
 
     synchronized private void loadTheURL(String path) {
         if (path != null) {
@@ -115,26 +118,9 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[],
-                                           int[] grantResults) {
-        switch (requestCode) {
-            case MY_INIT_PERMISSIONS_REQUES:
-                QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
-                    @Override
-                    public void onViewInitFinished(boolean arg0) {
-                        // loadUrl(launchUrl);
-                        loadTheURL(null);
-                    }
-
-                    @Override
-                    public void onCoreInitFinished() {
-                    }
-                };
-                QbSdk.initX5Environment(getApplicationContext(), cb);
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
+    public void onReturnSceneData(Scene scene) {
+        // 处理场景还原数据, 更新画面
+        loadTheURL(this.launchUrl + "#" + scene.params.get("path").toString());
     }
 
     @Override
@@ -161,12 +147,6 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
         setContentView(webViewLayout);
 
         appView.getView().requestFocusFromTouch();
-    }
-
-    @Override
-    public void onReturnSceneData(Scene scene) {
-        // 处理场景还原数据, 更新画面
-        loadTheURL(this.launchUrl + "#" + scene.params.get("path").toString());
     }
 
 }
