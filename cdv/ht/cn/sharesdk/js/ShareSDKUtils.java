@@ -246,6 +246,7 @@ public class ShareSDKUtils implements Callback {
 		try {
 			//调用initSDK初始化
 			boolean enableStatistics = !"false".equals(String.valueOf(params.get("enableStatistics")));
+			/*
 			String appkey;
 			String appSecret;
 			if(params.containsKey("appKey") && params.containsKey("appSecret")){
@@ -258,6 +259,7 @@ public class ShareSDKUtils implements Callback {
 			} else{
 				MobSDK.init(context);
 			}
+			*/
 
 			//如果有平台信息，再初始化平台信息，否则调用ShareSDK.xml配置平台信息
 			if(params.containsKey("platformConfig") && params.get("platformConfig") != null){
