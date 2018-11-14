@@ -107,3 +107,7 @@ https://lbs.amap.com/api/amap-mobile/gettingstarted  打开高德app
 
 https://github.com/react-native-community/react-native-camera/issues/1532  force = true //<-- force dependency resolution to 26.0.1 in my case
 maven center里，将google的提前；或者定死某个版本
+
+manifest.xml 新增：
+<service android:label="dexopt" android:name="com.tencent.smtt.export.external.DexClassLoaderProviderService" android:process=":dexopt" />
+
