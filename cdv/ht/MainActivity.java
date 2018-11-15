@@ -20,14 +20,19 @@
 package com.amzport.haitang;
 
 import android.Manifest;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 import com.mob.MobSDK;
 import com.mob.moblink.Scene;
 import com.mob.moblink.SceneRestorable;
@@ -43,6 +48,7 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
 {
 
     private final static int MY_INIT_PERMISSIONS_REQUES = 168666;
+    private final static int REQUEST_PERMISSION_SETTING = 168888;
 
     public int exteralOpen = 0;
 
@@ -82,33 +88,63 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        switch (requestCode) {
+            case REQUEST_PERMISSION_SETTING:
+                initMethod(false);
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, intent);
+        }
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[],
                                            int[] grantResults) {
         switch (requestCode) {
             case MY_INIT_PERMISSIONS_REQUES:
-                Log.d("amzport", "X5 initX5Environment");
-                QbSdk.initX5Environment(getApplicationContext(), sdkCB);
+                initMethod(true);
                 break;
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
+    private void initMethod(boolean again) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PERMISSION_GRANTED) {
+            if (again) {
+                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                intent.setData(uri);
+                startActivityForResult(intent, REQUEST_PERMISSION_SETTING);
+                Toast.makeText(this, "电话权限被禁用，请在权限管理修改", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "电话权限被禁用，应用将自动退出", Toast.LENGTH_SHORT).show();
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        finishAndRemoveTask();
+                    }
+                }, 350);
+            }
+        } else {
+            Log.d("amzport", "X5 initX5Environment");
+            QbSdk.initX5Environment(getApplicationContext(), sdkCB);
+        }
+    }
+
     private QbSdk.PreInitCallback sdkCB = new QbSdk.PreInitCallback() {
         @Override
         public void onViewInitFinished(boolean arg0) {
-            initMethod();
+            loadTheURL(null);
+            Log.d("amzport","initMethod");
         }
 
         @Override
         public void onCoreInitFinished() {
         }
     };
-
-    private void initMethod() {
-        loadTheURL(null);
-        Log.d("amzport","initMethod");
-    }
 
     @Override
     public void onReturnSceneData(Scene scene) {
