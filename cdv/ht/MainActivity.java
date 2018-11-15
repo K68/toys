@@ -50,6 +50,7 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
 
         RelativeLayout preloadLayout = new RelativeLayout(this);
@@ -71,8 +72,9 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, MY_INIT_PERMISSIONS_REQUES);
         } else {
-            Log.d("amzport","initX5Environment 1");
-            QbSdk.initX5Environment(getApplicationContext(), sdkCB);
+            Log.d("amzport", "X5 preInit");
+            // QbSdk.initX5Environment(getApplicationContext(), sdkCB);
+            QbSdk.preInit(getApplicationContext(), sdkCB);
         }
 
         // 初始化MobSDK
@@ -84,7 +86,7 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
                                            int[] grantResults) {
         switch (requestCode) {
             case MY_INIT_PERMISSIONS_REQUES:
-                Log.d("amzport","initX5Environment 2");
+                Log.d("amzport", "X5 initX5Environment");
                 QbSdk.initX5Environment(getApplicationContext(), sdkCB);
                 break;
             default:
@@ -95,14 +97,24 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
     private QbSdk.PreInitCallback sdkCB = new QbSdk.PreInitCallback() {
         @Override
         public void onViewInitFinished(boolean arg0) {
-            Log.d("amzport","Init then loadTheURL");
-            loadTheURL(null);
+            initMethod();
         }
 
         @Override
         public void onCoreInitFinished() {
         }
     };
+
+    private void initMethod() {
+        loadTheURL(null);
+        Log.d("amzport","initMethod");
+    }
+
+    @Override
+    public void onReturnSceneData(Scene scene) {
+        // 处理场景还原数据, 更新画面
+        loadTheURL(this.launchUrl + "#" + scene.params.get("path").toString());
+    }
 
     synchronized private void loadTheURL(String path) {
         if (path != null) {
@@ -115,12 +127,6 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
             loadUrl(launchUrl);
             exteralOpen = 1;
         }
-    }
-
-    @Override
-    public void onReturnSceneData(Scene scene) {
-        // 处理场景还原数据, 更新画面
-        loadTheURL(this.launchUrl + "#" + scene.params.get("path").toString());
     }
 
     @Override
