@@ -6,7 +6,7 @@ cordova plugin add cordova-plugin-whitelist@1.3.3
 cordova plugin add cordova-plugin-inappbrowser@3.0.0
 cordova plugin add cordova-plugin-dialogs@2.0.1
 cordova plugin add cordova-plugin-device@2.0.2
-cordova plugin add cordova-plugin-x-toast@2.6.2 (用Home替换)
+cordova plugin add cordova-plugin-x-toast@2.7.2 (用Home替换)
 cordova plugin add https://github.com/Rohfosho/CordovaCallNumberPlugin.git
 cordova plugin add cordova-plugin-app-version@0.1.9
 cordova plugin add phonegap-plugin-barcodescanner@8.0.0
