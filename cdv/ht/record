@@ -26,7 +26,7 @@ cordova build android
 cordova platform ls
 cordova plugin ls
 
-adb install outputs\apk\debug\android-debug.apk
+adb install platforms\android\build\outputs\apk\debug\android-debug.apk
 adb uninstall io.cordova.hellocordova
 
 https://github.com/apache/cordova-plugin-inappbrowser
