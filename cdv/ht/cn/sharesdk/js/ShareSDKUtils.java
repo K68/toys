@@ -134,6 +134,8 @@ public class ShareSDKUtils implements Callback {
 		String data = (String) objs[2];
 		String callback = (String) objs[3];
 
+		Log.d("ShareSDKUtils ===", "jsCallback");
+
 		HashMap<String, Object> req = null;
 		try {
 			req = hashon.fromJson(data);
@@ -485,6 +487,9 @@ public class ShareSDKUtils implements Callback {
 			}
 			if (map.containsKey("siteUrl")) {
 				oks.setSiteUrl(String.valueOf(map.get("siteUrl")));
+			}
+			if (map.containsKey("videoUrl")) {
+				oks.setVideoUrl(String.valueOf(map.get("siteUrl")));
 			}
 					
 			if (params.containsKey("platform") && params.get("platform") != null) { 
