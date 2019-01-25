@@ -33,7 +33,8 @@ import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-import com.mob.MobSDK;
+// import com.mob.MobSDK;
+import com.mob.moblink.MobLink;
 import com.mob.moblink.Scene;
 import com.mob.moblink.SceneRestorable;
 import com.tencent.smtt.export.external.TbsCoreSettings;
@@ -49,8 +50,8 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
 
     private final static int MY_INIT_PERMISSIONS_REQUES = 168666;
     private final static int REQUEST_PERMISSION_SETTING = 168888;
-
-    public int exteralOpen = 0;
+    public Boolean tbsInited = false;
+    public String toPath = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -78,13 +79,69 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, MY_INIT_PERMISSIONS_REQUES);
         } else {
-            Log.d("amzport", "X5 preInit");
-            // QbSdk.initX5Environment(getApplicationContext(), sdkCB);
-            QbSdk.preInit(getApplicationContext(), sdkCB);
+            if (QbSdk.isTbsCoreInited()) {
+                Log.d("amzport-link", "X5 preInit: isTbsCoreInited");
+                launchTheUrl();
+            } else {
+                Log.d("amzport-link", "X5 preInit: initX5");
+                QbSdk.initX5Environment(getApplicationContext(), sdkCB);
+                // QbSdk.preInit(getApplicationContext(), sdkCB);
+            }
         }
 
         // 初始化MobSDK
-        MobSDK.init(this);
+        // MobSDK.init(this);
+    }
+
+    private QbSdk.PreInitCallback sdkCB = new QbSdk.PreInitCallback() {
+        @Override
+        public void onViewInitFinished(boolean arg0) {
+            Log.d("amzport-link","initMethod");
+            launchTheUrl();
+        }
+        @Override
+        public void onCoreInitFinished() {
+        }
+    };
+
+    private void launchTheUrl() {
+        Log.d("amzport-link","launchTheUrl");
+        tbsInited = true;
+        if (toPath == null) {
+            loadUrl(launchUrl);
+        } else {
+            loadUrl(launchUrl + '#' + toPath);
+        }
+    }
+
+    @Override
+    public void onReturnSceneData(Scene scene) {
+        if (scene != null) {
+            // 处理场景还原数据, 更新画面
+            Object path = scene.params.get("path");
+            if (path != null) {
+                String _path = path.toString();
+                if (_path.equals("/")) {
+                    Log.d("amzport-link", "onReturnSceneData: Root Path [ / ]");
+                } else {
+                    toPath = _path;
+                    Log.d("amzport-link", "onReturnSceneData: " + toPath);
+                    if (tbsInited) {
+                        loadUrl(launchUrl + '#' + toPath);
+                    }
+                }
+            } else {
+                Log.d("amzport-link", "onReturnSceneData: Null Path");
+            }
+        }
+    }
+
+    // 必须重写该方法，防止MobLink在某些情景下无法还原
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        MobLink.updateNewIntent(getIntent(), this);
     }
 
     @Override
@@ -129,39 +186,8 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
                 }, 350);
             }
         } else {
-            Log.d("amzport", "X5 initX5Environment");
+            Log.d("amzport-link", "X5 initX5Environment");
             QbSdk.initX5Environment(getApplicationContext(), sdkCB);
-        }
-    }
-
-    private QbSdk.PreInitCallback sdkCB = new QbSdk.PreInitCallback() {
-        @Override
-        public void onViewInitFinished(boolean arg0) {
-            loadTheURL(null);
-            Log.d("amzport","initMethod");
-        }
-
-        @Override
-        public void onCoreInitFinished() {
-        }
-    };
-
-    @Override
-    public void onReturnSceneData(Scene scene) {
-        // 处理场景还原数据, 更新画面
-        loadTheURL(this.launchUrl + "#" + scene.params.get("path").toString());
-    }
-
-    synchronized private void loadTheURL(String path) {
-        if (path != null) {
-            if (exteralOpen == 0) {
-                loadUrl(launchUrl);
-            }
-            exteralOpen = 2;
-            appView.getEngine().loadUrl(path, true);
-        } else if(exteralOpen == 0) {
-            loadUrl(launchUrl);
-            exteralOpen = 1;
         }
     }
 
