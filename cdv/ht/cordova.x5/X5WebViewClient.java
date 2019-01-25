@@ -73,28 +73,24 @@ public class X5WebViewClient extends WebViewClient {
 
   private boolean amzport(String url) {
     if (url.startsWith("amzport://init") || url.startsWith("sharesdk://init") || url.startsWith("mobpush://init")) {
-      Log.d("amzport", "init");
+      Log.d("amzport-link", "init");
       parentEngine.parentWebView.getView().setBackground(null);
 
       parentEngine.mobPush.onInit();
       parentEngine.shareSDK.onInit();
-
-      if (url.startsWith("amzport://init") && ((MainActivity)parentEngine.cordova.getActivity()).exteralOpen == 2) {
-          parentEngine.loadUrl("javascript:window.exteralOpen=true;", false);
-      }
 
       return true;
     }
 
     if (url.startsWith("amzport://hide")) {
       MainActivity ma = (MainActivity)parentEngine.cordova.getActivity();
-      if (ma.exteralOpen == 2) { // 从外部打开，关闭Activity
-        Log.d("amzport", "close");
-        ma.exteralOpen = 0;
+      if (ma.toPath != null) { // 从外部打开，关闭Activity
+        Log.d("amzport-link", "close");
+        ma.tbsInited = false;
+        ma.toPath = null;
         ma.finish();
       } else {
-        Log.d("amzport", "hide");
-        ma.exteralOpen = 0;
+        Log.d("amzport-link", "hide");
         Intent intent= new Intent(Intent.ACTION_MAIN);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addCategory(Intent.CATEGORY_HOME);
