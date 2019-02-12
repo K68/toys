@@ -105,11 +105,12 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
     };
 
     private void launchTheUrl() {
-        Log.d("amzport-link","launchTheUrl");
         tbsInited = true;
         if (toPath == null) {
+            Log.d("amzport-link", "launchTheUrl load /");
             loadUrl(launchUrl);
         } else {
+            Log.d("amzport-link", "launchTheUrl load the URL");
             loadUrl(launchUrl + '#' + toPath);
         }
     }
@@ -127,7 +128,8 @@ public class MainActivity extends CordovaActivity implements SceneRestorable
                     toPath = _path;
                     Log.d("amzport-link", "onReturnSceneData: " + toPath);
                     if (tbsInited) {
-                        loadUrl(launchUrl + '#' + toPath);
+                        // loadUrl(launchUrl + '#' + toPath);
+                        appView.getEngine().evaluateJavascript("window.location.hash='#" + toPath + "';window.location.reload();", null);
                     }
                 }
             } else {
