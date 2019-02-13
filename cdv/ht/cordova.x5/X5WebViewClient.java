@@ -19,8 +19,10 @@
 package com.zsxsoft.cordova.x5;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
@@ -71,6 +73,24 @@ public class X5WebViewClient extends WebViewClient {
     this.parentEngine = parentEngine;
   }
 
+  /**
+   * 检查手机上是否安装了指定的软件
+   *
+   * @param context context
+   * @param pkgName 应用包名
+   * @return true:已安装；false：未安装
+   */
+  public static boolean isPkgInstalled(Context context, String pkgName) {
+    PackageInfo packageInfo;
+    try {
+      packageInfo = context.getPackageManager().getPackageInfo(pkgName, 0);
+    } catch (PackageManager.NameNotFoundException e) {
+      packageInfo = null;
+      e.printStackTrace();
+    }
+    return packageInfo != null;
+  }
+
   private boolean amzport(String url) {
     if (url.startsWith("amzport://init") || url.startsWith("sharesdk://init") || url.startsWith("mobpush://init")) {
       Log.d("amzport-link", "init");
@@ -95,6 +115,32 @@ public class X5WebViewClient extends WebViewClient {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addCategory(Intent.CATEGORY_HOME);
         ma.startActivity(intent);
+      }
+      return true;
+    }
+
+    if (url.startsWith("https://m.tb.")) {
+      MainActivity ma = (MainActivity)parentEngine.cordova.getActivity();
+      if (isPkgInstalled(ma, "com.taobao.taobao")) {
+        try {
+          Intent intent = new Intent();
+          intent.setAction(Intent.ACTION_VIEW);
+          intent.addCategory(Intent.CATEGORY_DEFAULT);
+          intent.setData(Uri.parse("taobao://m.taobao.com"));
+          ma.startActivity(intent);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      } else {
+        try {
+          Intent intent = new Intent();
+          intent.setAction(Intent.ACTION_VIEW);
+          intent.addCategory(Intent.CATEGORY_DEFAULT);
+          intent.setData(Uri.parse(url));
+          ma.startActivity(intent);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
       }
       return true;
     }
