@@ -123,10 +123,7 @@ public class X5WebViewClient extends WebViewClient {
       MainActivity ma = (MainActivity)parentEngine.cordova.getActivity();
       if (isPkgInstalled(ma, "com.taobao.taobao")) {
         try {
-          Intent intent = new Intent();
-          intent.setAction(Intent.ACTION_VIEW);
-          intent.addCategory(Intent.CATEGORY_DEFAULT);
-          intent.setData(Uri.parse("taobao://m.taobao.com"));
+          Intent intent = ma.getPackageManager().getLaunchIntentForPackage("com.taobao.taobao");
           ma.startActivity(intent);
         } catch (Exception e) {
           e.printStackTrace();
