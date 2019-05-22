@@ -22,6 +22,9 @@ import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient;
 import com.tencent.smtt.export.external.interfaces.JsResult;
 import com.tencent.smtt.sdk.*;
 import com.amzport.haitang.MainActivity;
+import org.apache.cordova.LOG;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,6 +33,9 @@ import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
 
 public class InAppBrowserActivity extends Activity {
 
+    public static InAppBrowserActivity currentNode = null;
+
+    private static final String LOG_TAG = "InAppBrowser";
     private static final String TOOLBAR_COLOR = "toolbarcolor";
     private static final String TOOLBAR_BTN_COLOR = "toolbarbtncolor";
     private static final String TOOLBAR_TXT_COLOR = "toolbartxtcolor";
@@ -37,7 +43,7 @@ public class InAppBrowserActivity extends Activity {
     private static final int FILECHOOSER_RESULTCODE_FOR_ANDROID_5 = 5259;
 
     private URL mIntentUrl;
-    private X5WebView inAppWebView;
+    public X5WebView inAppWebView;
     private ProgressBar progressBar;
     private ValueCallback<Uri> uploadFile;
     private ValueCallback<Uri[]> uploadFiles;
@@ -83,6 +89,7 @@ public class InAppBrowserActivity extends Activity {
     public void onDestroy() {
         if (inAppWebView != null)
             inAppWebView.destroy();
+        InAppBrowserActivity.currentNode = null;
         super.onDestroy();
     }
 
@@ -203,6 +210,7 @@ public class InAppBrowserActivity extends Activity {
     }
 
     private void initWebView() {
+        final InAppBrowserActivity that = this;
         inAppWebView = new X5WebView(this, null);
         inAppWebView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         inAppWebView.setId(6);
@@ -228,6 +236,20 @@ public class InAppBrowserActivity extends Activity {
                 super.onPageFinished(view, url);
                 if (progressBar != null) {
                     progressBar.setVisibility(View.GONE);
+                }
+
+                try {
+                    if (InAppBrowser.currentNode != null) {
+                        InAppBrowserActivity.currentNode = that;
+
+                        LOG.d(LOG_TAG, "loadstop");
+                        JSONObject obj = new JSONObject();
+                        obj.put("type", "loadstop");
+                        obj.put("url", url);
+                        InAppBrowser.currentNode.sendUpdate(obj, true);
+                    }
+                } catch (Exception ex) {
+                    LOG.d(LOG_TAG, ex.getMessage());
                 }
             }
 
