@@ -40,6 +40,8 @@ import java.util.StringTokenizer;
 @SuppressLint("SetJavaScriptEnabled")
 public class InAppBrowser extends CordovaPlugin {
 
+    public static InAppBrowser currentNode = null;
+
     private static final String NULL = "null";
     private static final String LOG_TAG = "InAppBrowser";
     private static final String SELF = "_self";
@@ -69,6 +71,7 @@ public class InAppBrowser extends CordovaPlugin {
             final HashMap<String, String> features = parseFeature(args.optString(2));
 
             LOG.d(LOG_TAG, "target = " + target);
+            LOG.d(LOG_TAG, url);
 
             this.cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -151,8 +154,13 @@ public class InAppBrowser extends CordovaPlugin {
                     callbackContext.sendPluginResult(pluginResult);
                 }
             });
-        }
-        else {
+        } else if (action.equals("injectScriptCode")) {
+            String jsWrapper = null;
+            if (args.getBoolean(1)) {
+                jsWrapper = String.format("(function(){prompt(JSON.stringify([eval(%%s)]), 'gap-iab://%s')})()", callbackContext.getCallbackId());
+            }
+            injectDeferredObject(args.getString(0), jsWrapper);
+        } else {
             return false;
         }
         return true;
@@ -229,6 +237,8 @@ public class InAppBrowser extends CordovaPlugin {
      * @param features jsonObject
      */
     public String showWebPage(final String url, HashMap<String, String> features) {
+        InAppBrowser.currentNode = this;
+
         Intent i = new Intent(this.cordova.getActivity(), InAppBrowserActivity.class);
         i.putExtra("url", url);
         i.putExtra("title", features.get("title"));
@@ -244,7 +254,7 @@ public class InAppBrowser extends CordovaPlugin {
      *
      * @param obj a JSONObject contain event payload information
      */
-    private void sendUpdate(JSONObject obj, boolean keepCallback) {
+    public void sendUpdate(JSONObject obj, boolean keepCallback) {
         sendUpdate(obj, keepCallback, PluginResult.Status.OK);
     }
 
@@ -262,6 +272,31 @@ public class InAppBrowser extends CordovaPlugin {
             if (!keepCallback) {
                 callbackContext = null;
             }
+        }
+    }
+
+    private void injectDeferredObject(String source, String jsWrapper) {
+        if (InAppBrowserActivity.currentNode != null) {
+            String scriptToInject;
+            if (jsWrapper != null) {
+                org.json.JSONArray jsonEsc = new org.json.JSONArray();
+                jsonEsc.put(source);
+                String jsonRepr = jsonEsc.toString();
+                String jsonSourceString = jsonRepr.substring(1, jsonRepr.length()-1);
+                scriptToInject = String.format(jsWrapper, jsonSourceString);
+            } else {
+                scriptToInject = source;
+            }
+            final String finalScriptToInject = scriptToInject;
+            this.cordova.getActivity().runOnUiThread(new Runnable() {
+                @SuppressLint("NewApi")
+                @Override
+                public void run() {
+                    InAppBrowserActivity.currentNode.inAppWebView.evaluateJavascript(finalScriptToInject, null);
+                }
+            });
+        } else {
+            LOG.d(LOG_TAG, "Can't inject code into the system browser");
         }
     }
 
